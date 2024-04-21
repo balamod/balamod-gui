@@ -17,7 +17,7 @@ void main() async {
       .bytes;
   final cipher = HydratedAesCipher(byteskey);
   final cacheDir = await getApplicationCacheDirectory();
-  final storageDirectory = Directory('$cacheDir/balamod');
+  final storageDirectory = Directory('${cacheDir.path}/balamod');
   await storageDirectory.create(recursive: true);
 
   HydratedBloc.storage = await HydratedStorage.build(
