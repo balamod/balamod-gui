@@ -19,6 +19,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Get version tag
+        id: version
+        run: echo "version=$(git describe --tags --always)" >> $GITHUB_OUTPUT
+
       - name: Setup flutter
         uses: subosito/flutter-action@v2
         with:
@@ -33,7 +37,7 @@ jobs:
           dart run flutter_launcher_icons
 
       - name: Build Windows
-        run: flutter build windows --release
+        run: flutter build windows --release --build-name ${{ steps.version.outputs.version }}
 
       - name: Push exe to release assets
         uses: actions/upload-release-asset@v1
@@ -49,6 +53,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Get version tag
+        id: version
+        run: echo "version=$(git describe --tags --always)" >> $GITHUB_OUTPUT
 
       - name: Get Current Release
         id: get_current_release
@@ -75,7 +83,7 @@ jobs:
           dart run flutter_launcher_icons
 
       - name: Build Linux
-        run: flutter build linux --release
+        run: flutter build linux --release --build-name ${{ steps.version.outputs.version }}
 
       - name: Push executable to release assets
         uses: actions/upload-release-asset@v1
@@ -91,6 +99,10 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Get version tag
+        id: version
+        run: echo "version=$(git describe --tags --always)" >> $GITHUB_OUTPUT
 
       - name: Get Current Release
         id: get_current_release
@@ -114,7 +126,7 @@ jobs:
           dart run flutter_launcher_icons
 
       - name: Build MacOS
-        run: flutter build macos --release
+        run: flutter build macos --release --build-name ${{ steps.version.outputs.version }}
 
       - name: Generate PKG file
         run: |
