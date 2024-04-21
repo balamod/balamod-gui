@@ -74,4 +74,6 @@ abstract class PlatformFinder {
   }
 
   Future<Directory> getBalatroSaveDirectory();
+
+  Future<Uri> getBalamodReleaseUrl({String version = "latest"});
 }

@@ -10,10 +10,12 @@ Balatro _$BalatroFromJson(Map<String, dynamic> json) => Balatro(
       path: json['path'] as String,
       executable: json['executable'] as String,
       version: json['version'] as String,
+      balamodVersion: json['balamodVersion'] as String?,
     );
 
 Map<String, dynamic> _$BalatroToJson(Balatro instance) => <String, dynamic>{
       'path': instance.path,
       'executable': instance.executable,
       'version': instance.version,
+      'balamodVersion': instance.balamodVersion,
     };

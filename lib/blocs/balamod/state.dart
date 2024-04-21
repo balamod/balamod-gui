@@ -6,9 +6,11 @@ enum BalamodStatus { loading, ready, error }
 class BalamodState extends Equatable {
   final List<Balatro> balamods;
   final BalamodStatus status;
+  final List<Release> releases;
 
   const BalamodState({
     this.balamods = const [],
+    this.releases = const [],
     this.status = BalamodStatus.loading,
   });
 
@@ -17,10 +19,12 @@ class BalamodState extends Equatable {
   BalamodState copyWith({
     List<Balatro>? balamods,
     BalamodStatus? status,
+    List<Release>? releases,
   }) {
     return BalamodState(
       balamods: balamods ?? this.balamods,
       status: status ?? this.status,
+      releases: releases ?? this.releases,
     );
   }
 
@@ -30,5 +34,5 @@ class BalamodState extends Equatable {
   Map<String, dynamic> toJson() => _$BalamodStateToJson(this);
 
   @override
-  List<Object> get props => [balamods];
+  List<Object> get props => [balamods, releases.map((r) => r.id)];
 }

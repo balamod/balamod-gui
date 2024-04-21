@@ -19,6 +19,7 @@ final router = GoRouter(
           path: path,
           version: version,
           balamodVersion: balamodVersion,
+          executable: state.uri.queryParameters['executable']!,
         );
       },
     ),

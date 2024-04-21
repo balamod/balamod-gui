@@ -312,6 +312,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.2.0"
+  github:
+    dependency: "direct main"
+    description:
+      name: github
+      sha256: "57f6ad78591f9638e903409977443093f862d25062a6b582a3c89e4ae44e4814"
+      url: "https://pub.dev"
+    source: hosted
+    version: "9.24.0"
   glob:
     dependency: transitive
     description:
@@ -773,6 +781,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.0+1"
+  tar:
+    dependency: "direct main"
+    description:
+      name: tar
+      sha256: aca91e93ff9ff2dba4462c6eea6bc260b72f0d7010e748e3397c32190529bd6e
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.4"
   term_glyph:
     dependency: transitive
     description:

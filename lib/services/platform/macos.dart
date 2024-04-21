@@ -23,4 +23,12 @@ class BalatroFinder extends PlatformFinder {
     final homeDir = '/Users/${Platform.environment['USER']}';
     return Directory('$homeDir/Library/Application Support/Balatro');
   }
+
+  @override
+  Future<Uri> getBalamodReleaseUrl({String version = 'latest'}) async {
+    if (version == 'latest') {
+      return Uri.parse('https://github.com/balamod/balamod_lua/releases/$version/download/balamod-macos.tar.gz');
+    }
+    return Uri.parse('https://github.com/balamod/balamod_lua/releases/download/$version/balamod-macos.tar.gz');
+  }
 }

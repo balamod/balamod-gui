@@ -32,4 +32,12 @@ class BalatroFinder extends PlatformFinder {
     final homeDir = Platform.environment['USERPROFILE'];
     return Directory('$homeDir\\AppData\\Roaming\\Balatro');
   }
+
+  @override
+  Future<Uri> getBalamodReleaseUrl({String version = 'latest'}) async {
+    if (version == 'latest') {
+      return Uri.parse('https://github.com/balamod/balamod_lua/releases/$version/download/balamod-windows.tar.gz');
+    }
+    return Uri.parse('https://github.com/balamod/balamod_lua/releases/download/$version/balamod-windows.tar.gz');
+  }
 }

@@ -23,6 +23,8 @@ dependencies:
   crypto: ^3.0.3
   win32_registry: ^1.1.2
   http: ^1.2.1
+  tar: ^1.0.4
+  github: ^9.24.0
 
 dev_dependencies:
   flutter_test:

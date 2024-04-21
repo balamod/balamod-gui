@@ -12,12 +12,10 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      final cubit = context.read<BalamodCubit>();
-      cubit.loadState();
-    });
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final cubit = context.read<BalamodCubit>();
+    cubit.loadState();
   }
 
   @override
@@ -44,6 +42,7 @@ class _HomePageState extends State<HomePage> {
                 final suffix = balamodVersion == ''
                     ? '(Vanilla)'
                     : '(Balamod $balamodVersion)';
+                final balamodExecutable = state.balamods[index].executable;
                 return ListTile(
                   title: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -59,7 +58,8 @@ class _HomePageState extends State<HomePage> {
                   subtitle: Text(state.balamods[index].path),
                   onTap: () {
                     context.go(
-                        '/balatro?path=$path&version=$version&balamodVersion=$balamodVersion');
+                      '/balatro?path=$path&version=$version&balamodVersion=$balamodVersion&executable=$balamodExecutable',
+                    );
                   },
                 );
               },

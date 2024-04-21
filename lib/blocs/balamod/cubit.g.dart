@@ -11,6 +11,10 @@ BalamodState _$BalamodStateFromJson(Map<String, dynamic> json) => BalamodState(
               ?.map((e) => Balatro.fromJson(e as Map<String, dynamic>))
               .toList() ??
           const [],
+      releases: (json['releases'] as List<dynamic>?)
+              ?.map((e) => Release.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
       status: $enumDecodeNullable(_$BalamodStatusEnumMap, json['status']) ??
           BalamodStatus.loading,
     );
@@ -19,6 +23,7 @@ Map<String, dynamic> _$BalamodStateToJson(BalamodState instance) =>
     <String, dynamic>{
       'balamods': instance.balamods.map((e) => e.toJson()).toList(),
       'status': _$BalamodStatusEnumMap[instance.status]!,
+      'releases': instance.releases.map((e) => e.toJson()).toList(),
     };
 
 const _$BalamodStatusEnumMap = {
