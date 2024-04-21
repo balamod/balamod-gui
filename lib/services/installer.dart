@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:balamod_app/models/balatro.dart';
+import 'package:balamod/models/balatro.dart';
 import 'dart:io';
 import 'package:archive/archive_io.dart';
-import 'package:balamod_app/services/finder.dart';
+import 'package:balamod/services/finder.dart';
 import 'package:http/http.dart' as http;
 
 import 'platform/windows.dart' as windows;
@@ -137,7 +137,8 @@ class Installer {
     eventLog.add('Extracting balatro executable to ${targetDir.path}...');
     eventLog.add('File list: ${balatroArchive.map((file) => file.name)}');
     for (final file in balatroArchive.files) {
-      eventLog.add('Extracting ${file.name} to ${targetDir.path}/${file.name}...');
+      eventLog
+          .add('Extracting ${file.name} to ${targetDir.path}/${file.name}...');
       if (file.isFile) {
         final destination = File('${targetDir.path}/${file.name}');
         await destination.create(recursive: true);

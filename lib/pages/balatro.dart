@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:balamod_app/blocs/balamod_details/cubit.dart';
-import 'package:balamod_app/models/balatro.dart';
+import 'package:balamod/blocs/balamod_details/cubit.dart';
+import 'package:balamod/models/balatro.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -82,9 +82,9 @@ class _BalatroPageState extends State<BalatroPage> {
                       ],
                       value: null,
                       hint: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 2.0),
-                            child: Text(state.selectedRelease),
-                          ),
+                        padding: const EdgeInsets.symmetric(horizontal: 2.0),
+                        child: Text(state.selectedRelease),
+                      ),
                       onChanged: (release) => cubit.selectRelease(release),
                     ),
                   ),
@@ -110,12 +110,17 @@ class _BalatroPageState extends State<BalatroPage> {
                     },
                     child: const Text('Decompile'),
                   ),
-                  IconButton.outlined(onPressed: () async {
-                    String? selectedDirectory = await FilePicker.platform.getDirectoryPath();
-                    if (selectedDirectory != null) {
-                      cubit.setDecompileDirectory(Directory(selectedDirectory));
-                    }
-                  }, icon: const Icon(Icons.folder),)
+                  IconButton.outlined(
+                    onPressed: () async {
+                      String? selectedDirectory =
+                          await FilePicker.platform.getDirectoryPath();
+                      if (selectedDirectory != null) {
+                        cubit.setDecompileDirectory(
+                            Directory(selectedDirectory));
+                      }
+                    },
+                    icon: const Icon(Icons.folder),
+                  )
                 ],
               ),
             ],

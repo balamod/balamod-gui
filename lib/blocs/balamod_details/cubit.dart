@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:balamod_app/models/balatro.dart';
-import 'package:balamod_app/services/installer.dart';
+import 'package:balamod/models/balatro.dart';
+import 'package:balamod/services/installer.dart';
 import 'package:equatable/equatable.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -24,8 +24,7 @@ class BalamodDetailsCubit extends HydratedCubit<BalamodDetailsState> {
     final eventLogStreamController = StreamController<String>();
     final progressStreamController = StreamController<double>();
     eventLogStreamController.stream.listen((event) {
-      emit(state
-          .copyWith(eventLogs: [...state.eventLogs, event]));
+      emit(state.copyWith(eventLogs: [...state.eventLogs, event]));
     });
     progressStreamController.stream.listen((event) {
       emit(state.copyWith(progress: event));
@@ -67,9 +66,9 @@ class BalamodDetailsCubit extends HydratedCubit<BalamodDetailsState> {
     if (state.status == Status.loading) return;
     if (state.decompileDirectory == null) return;
     final installer = Installer(balatro: state.balatro!);
-    final targetDir = Directory('${state.decompileDirectory!.path}/balatro-${state.balatro!.version}');
-    await installer.decompile(
-        targetDir, state.eventLogStreamController!);
+    final targetDir = Directory(
+        '${state.decompileDirectory!.path}/balatro-${state.balatro!.version}');
+    await installer.decompile(targetDir, state.eventLogStreamController!);
   }
 
   void setDecompileDirectory(Directory directory) {

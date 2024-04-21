@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:balamod_app/models/balatro.dart';
+import 'package:balamod/models/balatro.dart';
 
 import 'platform/windows.dart' as windows;
 import 'platform/macos.dart' as macos;

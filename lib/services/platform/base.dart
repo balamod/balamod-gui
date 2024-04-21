@@ -1,4 +1,4 @@
-import 'package:balamod_app/models/balatro.dart';
+import 'package:balamod/models/balatro.dart';
 import 'dart:io';
 import 'dart:convert';
 import 'package:archive/archive_io.dart';

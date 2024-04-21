@@ -1,4 +1,4 @@
-import 'package:balamod_app/services/platform/base.dart';
+import 'package:balamod/services/platform/base.dart';
 import 'dart:io';
 
 class BalatroFinder extends PlatformFinder {
@@ -27,8 +27,10 @@ class BalatroFinder extends PlatformFinder {
   @override
   Future<Uri> getBalamodReleaseUrl({String version = 'latest'}) async {
     if (version == 'latest') {
-      return Uri.parse('https://github.com/balamod/balamod_lua/releases/$version/download/balamod-macos.tar.gz');
+      return Uri.parse(
+          'https://github.com/balamod/balamod_lua/releases/$version/download/balamod-macos.tar.gz');
     }
-    return Uri.parse('https://github.com/balamod/balamod_lua/releases/download/$version/balamod-macos.tar.gz');
+    return Uri.parse(
+        'https://github.com/balamod/balamod_lua/releases/download/$version/balamod-macos.tar.gz');
   }
 }
