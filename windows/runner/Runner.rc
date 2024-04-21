@@ -89,13 +89,13 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "balamod_app" "\0"
+            VALUE "CompanyName", "org.balamod.balamod" "\0"
+            VALUE "FileDescription", "balamod" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "balamod_app" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2024 com.example. All rights reserved." "\0"
-            VALUE "OriginalFilename", "balamod_app.exe" "\0"
-            VALUE "ProductName", "balamod_app" "\0"
+            VALUE "InternalName", "Balamod" "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2024 org.balamod.balamod. All rights reserved." "\0"
+            VALUE "OriginalFilename", "balamod.exe" "\0"
+            VALUE "ProductName", "Balamod" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

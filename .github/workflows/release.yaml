@@ -37,9 +37,11 @@ jobs:
 
       - name: Push exe to release assets
         uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.get_current_release.outputs.upload_url }}
-          asset_path: build/windows/runner/Release/balamod.exe
+          asset_path: build\windows\x64\runner\Release\balamod.exe
           asset_name: balamod.exe
           asset_content_type: application/octet-stream
 
@@ -55,6 +57,9 @@ jobs:
           debug: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup ninja build tooling
+        uses: seanmiddleditch/gha-setup-ninja@master
 
       - name: Setup flutter
         uses: subosito/flutter-action@v2
@@ -74,6 +79,8 @@ jobs:
 
       - name: Push executable to release assets
         uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.get_current_release.outputs.upload_url }}
           asset_path: build/linux/release/balamod
@@ -119,6 +126,8 @@ jobs:
 
       - name: Push pkg to release assets
         uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.get_current_release.outputs.upload_url }}
           asset_path: balamod.pkg
