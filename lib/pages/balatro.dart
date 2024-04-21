@@ -1,8 +1,12 @@
+import 'dart:io';
+
 import 'package:balamod_app/blocs/balamod_details/cubit.dart';
 import 'package:balamod_app/models/balatro.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class BalatroPage extends StatefulWidget {
   final String path;
@@ -36,9 +40,6 @@ class _BalatroPageState extends State<BalatroPage> {
   }
 
   Widget _buildPage(BuildContext context, BalamodDetailsState state) {
-    final shouldInstall = widget.balamodVersion == '';
-    final installBtnText =
-        shouldInstall ? 'Install Balamod' : 'Uninstall Balamod';
     final cubit = context.read<BalamodDetailsCubit>();
     return Scaffold(
       appBar: AppBar(
@@ -62,45 +63,82 @@ class _BalatroPageState extends State<BalatroPage> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  DropdownButton(
-                    items: [
-                      const DropdownMenuItem(
-                        value: null,
-                        child: Text('latest'),
-                      ),
-                      ...state.releases.map(
-                        (release) {
-                          return DropdownMenuItem(
-                            value: release,
-                            child: Text(release.tagName ?? 'latest'),
-                          );
-                        },
-                      )
-                    ],
-                    value: null,
-                    hint: const Text('latest'),
-                    onChanged: (release) => cubit.selectRelease(release),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: DropdownButton(
+                      items: [
+                        const DropdownMenuItem(
+                          value: null,
+                          child: Text('latest'),
+                        ),
+                        ...state.releases.map(
+                          (release) {
+                            return DropdownMenuItem(
+                              value: release,
+                              child: Text(release.tagName ?? 'latest'),
+                            );
+                          },
+                        )
+                      ],
+                      value: null,
+                      hint: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 2.0),
+                            child: Text(state.selectedRelease),
+                          ),
+                      onChanged: (release) => cubit.selectRelease(release),
+                    ),
                   ),
                   TextButton(
                     onPressed: () {
                       cubit.install();
                     },
-                    child: Text(installBtnText),
+                    child: const Text('Install'),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      cubit.uninstall();
+                    },
+                    child: const Text('Uninstall'),
                   ),
                 ],
               ),
-              TextButton(
-                onPressed: () {},
-                child: const Text('Decompile'),
+              Row(
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      cubit.decompile();
+                    },
+                    child: const Text('Decompile'),
+                  ),
+                  IconButton.outlined(onPressed: () async {
+                    String? selectedDirectory = await FilePicker.platform.getDirectoryPath();
+                    if (selectedDirectory != null) {
+                      cubit.setDecompileDirectory(Directory(selectedDirectory));
+                    }
+                  }, icon: const Icon(Icons.folder),)
+                ],
               ),
             ],
           ),
           const SizedBox(height: 20),
-          if (state.eventLog != null)
-            StreamBuilder<String>(
-              builder: (context, snapshot) => Text(snapshot.data ?? ''),
-              stream: state.eventLog!.stream,
+          SizedBox(
+            height: 400,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ListView.builder(
+                itemCount: state.eventLogs.length,
+                itemBuilder: (ctx, index) {
+                  return ListTile(
+                    dense: true,
+                    title: Text(
+                      state.eventLogs[index],
+                      style: GoogleFonts.robotoMono(fontSize: 12),
+                    ),
+                  );
+                },
+              ),
             ),
+          ),
         ],
       ),
     );

@@ -18,6 +18,13 @@ BalamodDetailsState _$BalamodDetailsStateFromJson(Map<String, dynamic> json) =>
       status: $enumDecodeNullable(_$StatusEnumMap, json['status']) ??
           Status.loading,
       selectedRelease: json['selectedRelease'] as String? ?? 'latest',
+      eventLogs: (json['eventLogs'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const [],
+      decompileDirectory:
+          _dirFromJson(json['decompileDirectory'] as Map<String, dynamic>?),
+      progress: (json['progress'] as num?)?.toDouble() ?? 0.0,
     );
 
 Map<String, dynamic> _$BalamodDetailsStateToJson(
@@ -27,6 +34,9 @@ Map<String, dynamic> _$BalamodDetailsStateToJson(
       'status': _$StatusEnumMap[instance.status]!,
       'releases': instance.releases.map((e) => e.toJson()).toList(),
       'selectedRelease': instance.selectedRelease,
+      'eventLogs': instance.eventLogs,
+      'decompileDirectory': _dirToJson(instance.decompileDirectory),
+      'progress': instance.progress,
     };
 
 const _$StatusEnumMap = {

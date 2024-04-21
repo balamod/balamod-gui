@@ -68,7 +68,10 @@ class Installer {
     final archive =
         TarDecoder().decodeBytes(GZipDecoder().decodeBytes(response.bodyBytes));
     for (final file in archive) {
-      final filename = file.name.split('/').skipWhile((value) => value.startsWith('balamod-')).join('/');
+      final filename = file.name
+          .split('/')
+          .skipWhile((value) => value.startsWith('balamod-'))
+          .join('/');
       final destination = File('${saveDirectory.path}/balamod/$filename');
       eventLog.add('Extracting ${file.name} to ${destination.path}');
       destination.createSync(recursive: true);
@@ -118,5 +121,32 @@ class Installer {
       await mainLua.delete();
     }
     eventLog.add('Uninstall complete!');
+  }
+
+  Future<void> decompile(
+      Directory targetDir, StreamController<String> eventLog) async {
+    eventLog.add('Decompiling balatro ${balatro.version}...');
+    final balatroExe = File('${balatro.path}/${balatro.executable}');
+    if (!balatroExe.existsSync()) {
+      eventLog.add('balatro executable not found at ${balatroExe.path}');
+      return;
+    }
+    eventLog.add('Opening balatro executable at ${balatroExe.path}...');
+    final balatroArchive =
+        ZipDecoder().decodeBytes(balatroExe.readAsBytesSync());
+    eventLog.add('Extracting balatro executable to ${targetDir.path}...');
+    eventLog.add('File list: ${balatroArchive.map((file) => file.name)}');
+    for (final file in balatroArchive.files) {
+      eventLog.add('Extracting ${file.name} to ${targetDir.path}/${file.name}...');
+      if (file.isFile) {
+        final destination = File('${targetDir.path}/${file.name}');
+        await destination.create(recursive: true);
+        await destination.writeAsBytes(file.content as List<int>);
+      } else {
+        final destination = Directory('${targetDir.path}/${file.name}');
+        await destination.create(recursive: true);
+      }
+    }
+    eventLog.add('Decompilation complete!');
   }
 }
