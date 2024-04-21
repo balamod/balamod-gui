@@ -1,0 +1,126 @@
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get Current Release
+        id: get_current_release
+        uses: joutvhu/get-release@v1
+        with:
+          debug: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.19.4'
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Run code generation
+        run:
+          dart run build_runner build --delete-conflicting-outputs
+          dart run flutter_launcher_icons
+
+      - name: Build Windows
+        run: flutter build windows --release
+
+      - name: Push exe to release assets
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.get_current_release.outputs.upload_url }}
+          asset_path: build/windows/runner/Release/balamod.exe
+          asset_name: balamod.exe
+          asset_content_type: application/octet-stream
+
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get Current Release
+        id: get_current_release
+        uses: joutvhu/get-release@v1
+        with:
+          debug: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.19.4'
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Run code generation
+        run:
+          dart run build_runner build --delete-conflicting-outputs
+          dart run flutter_launcher_icons
+
+      - name: Build Linux
+        run: flutter build linux --release
+
+      - name: Push executable to release assets
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.get_current_release.outputs.upload_url }}
+          asset_path: build/linux/release/balamod
+          asset_name: balamod
+          asset_content_type: application/octet-stream
+
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get Current Release
+        id: get_current_release
+        uses: joutvhu/get-release@v1
+        with:
+          debug: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.19.4'
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Run code generation
+        run:
+          dart run build_runner build --delete-conflicting-outputs
+          dart run flutter_launcher_icons
+
+      - name: Build MacOS
+        run: flutter build macos --release
+
+      - name: Generate PKG file
+        run: |
+          pkgbuild --identifier org.balamod.balamod --install-location /Applications --root build/macos/Build/Products/Release/Balamod.app ./balamod.pkg
+
+      - name: Sign installer
+        run: |
+          codesign --force --deep --sign - ./balamod.pkg
+
+      - name: Push pkg to release assets
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.get_current_release.outputs.upload_url }}
+          asset_path: balamod.pkg
+          asset_name: balamod.pkg
+          asset_content_type: application/octet-stream
