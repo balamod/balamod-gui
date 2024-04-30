@@ -4,7 +4,7 @@ import 'dart:io';
 class BalatroFinder extends PlatformFinder {
   @override
   Future<String> getSteamPath() async {
-    final homeDir = '/Users/${Platform.environment['USER']}';
+    final homeDir = '${Platform.environment['HOME']}';
     return "$homeDir/.local/share/Steam";
   }
 
@@ -20,9 +20,9 @@ class BalatroFinder extends PlatformFinder {
 
   @override
   Future<Directory> getBalatroSaveDirectory() async {
-    final homeDir = '/Users/${Platform.environment['USER']}';
+    final homeDir = '${Platform.environment['HOME']}';
     return Directory(
-        '$homeDir/.local/share/balatro'); // ?? not sure about the linux directory
+        '$homeDir/.local/share/Steam/steamapps/compatdata/2379780/pfx/drive_c/users/steamuser/AppData/Roaming/Balatro'); // ?? not sure about the linux directory
   }
 
   @override

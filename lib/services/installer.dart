@@ -1,15 +1,15 @@
 import 'dart:async';
 import 'dart:convert';
-
-import 'package:balamod/models/balatro.dart';
 import 'dart:io';
+
 import 'package:archive/archive_io.dart';
+import 'package:balamod/models/balatro.dart';
 import 'package:balamod/services/finder.dart';
 import 'package:http/http.dart' as http;
 
-import 'platform/windows.dart' as windows;
-import 'platform/macos.dart' as macos;
 import 'platform/linux.dart' as linux;
+import 'platform/macos.dart' as macos;
+import 'platform/windows.dart' as windows;
 
 class Installer {
   final Balatro balatro;
@@ -82,8 +82,29 @@ class Installer {
 
     // Patch the main.lua file in the balatro archive
     eventLog.add('Patching balatro main.lua...');
+    final executableBytes =
+        await File('${balatro.path}/${balatro.executable}').readAsBytes();
+    final zipHeader = [0x50, 0x4b, 0x03, 0x04];
+    var zipHeaderIndex = 0;
+    var zipOffset = 0;
+    for (var i = 0; i < executableBytes.length; i++) {
+      final byte = executableBytes[i];
+      if (byte == zipHeader[zipHeaderIndex]) {
+        zipHeaderIndex++;
+        if (zipHeaderIndex == zipHeader.length) {
+          zipOffset = i - zipHeader.length + 1;
+          break;
+        }
+      } else {
+        zipHeaderIndex = 0;
+      }
+    }
     final balatroArchive = ZipDecoder().decodeBytes(
-        File('${balatro.path}/${balatro.executable}').readAsBytesSync());
+      executableBytes.sublist(
+        zipOffset,
+        executableBytes.length,
+      ),
+    );
     final mainLua = balatroArchive.firstWhere(
       (file) => file.name == 'main.lua',
       orElse: () => throw StateError('main.lua not found in balatro archive'),
@@ -133,7 +154,7 @@ class Installer {
     }
     eventLog.add('Opening balatro executable at ${balatroExe.path}...');
     final balatroArchive =
-        ZipDecoder().decodeBytes(balatroExe.readAsBytesSync());
+        ZipDecoder().decodeBytes(balatroExe.readAsBytesSync()); // TODO: find zip header on linux and windows
     eventLog.add('Extracting balatro executable to ${targetDir.path}...');
     eventLog.add('File list: ${balatroArchive.map((file) => file.name)}');
     for (final file in balatroArchive.files) {
