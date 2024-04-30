@@ -21,7 +21,15 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<BalamodCubit, BalamodState>(
-        listener: (context, state) {},
+        listener: (context, state) {
+          if (state.status == BalamodStatus.ready) {
+            if (state.balamods.singleOrNull != null) {
+              context.go(
+                '/balatro?path=${state.balamods.single.path}&version=${state.balamods.single.version}&balamodVersion=${state.balamods.single.balamodVersion}&executable=${state.balamods.single.executable}',
+              );
+            }
+          }
+        },
         builder: (context, state) {
           if (state.status == BalamodStatus.loading) {
             return const Center(

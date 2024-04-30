@@ -5,10 +5,11 @@ import 'package:balamod/models/balatro.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:github/github.dart' show Release;
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class BalatroPage extends StatefulWidget {
+class BalatroPage extends StatelessWidget {
   final String path;
   final String version;
   final String balamodVersion;
@@ -22,23 +23,6 @@ class BalatroPage extends StatefulWidget {
     required this.executable,
   });
 
-  @override
-  State<BalatroPage> createState() => _BalatroPageState();
-}
-
-class _BalatroPageState extends State<BalatroPage> {
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    final cubit = context.read<BalamodDetailsCubit>();
-    cubit.loadState(Balatro(
-      path: widget.path,
-      executable: widget.executable,
-      version: widget.version,
-      balamodVersion: widget.balamodVersion,
-    ));
-  }
-
   Widget _buildPage(BuildContext context, BalamodDetailsState state) {
     final cubit = context.read<BalamodDetailsCubit>();
     return Scaffold(
@@ -49,7 +33,7 @@ class _BalatroPageState extends State<BalatroPage> {
           },
           icon: const Icon(Icons.arrow_back),
         ),
-        title: Text('Balatro ${widget.version}'),
+        title: Text('Balatro $version'),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -65,25 +49,19 @@ class _BalatroPageState extends State<BalatroPage> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: DropdownButton(
-                      items: [
-                        const DropdownMenuItem(
-                          value: null,
-                          child: Text('latest'),
-                        ),
-                        ...state.releases.map(
-                          (release) {
-                            return DropdownMenuItem(
-                              value: release,
-                              child: Text(release.tagName ?? 'latest'),
-                            );
-                          },
-                        )
-                      ],
-                      value: null,
+                    child: DropdownButton<Release>(
+                      items: state.releases.map(
+                        (release) {
+                          return DropdownMenuItem(
+                            value: release,
+                            child: Text(release.tagName!),
+                          );
+                        },
+                      ).toList(),
+                      value: state.selectedRelease,
                       hint: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 2.0),
-                        child: Text(state.selectedRelease),
+                        child: Text(state.selectedRelease!.tagName!),
                       ),
                       onChanged: (release) => cubit.selectRelease(release),
                     ),
@@ -131,6 +109,7 @@ class _BalatroPageState extends State<BalatroPage> {
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: ListView.builder(
+                controller: state.scrollController!,
                 itemCount: state.eventLogs.length,
                 itemBuilder: (ctx, index) {
                   return ListTile(
@@ -154,7 +133,15 @@ class _BalatroPageState extends State<BalatroPage> {
     return BlocConsumer<BalamodDetailsCubit, BalamodDetailsState>(
       listener: (context, state) {},
       builder: (context, state) {
-        if (state.status == Status.loading) {
+        if (!state.isLoaded) {
+          if (state.status == Status.initial) {
+            context.read<BalamodDetailsCubit>().loadState(Balatro(
+              path: path,
+              executable: executable,
+              version: version,
+              balamodVersion: balamodVersion,
+            ),);
+          }
           return const Center(
             child: CircularProgressIndicator(),
           );

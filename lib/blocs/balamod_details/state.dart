@@ -1,6 +1,6 @@
 part of 'cubit.dart';
 
-enum Status { loading, ready, error }
+enum Status { initial, loading, ready, error }
 
 Directory? _dirFromJson(Map<String, dynamic>? json) => json?['path'] == null ? null : Directory(json!['path'] as String);
 
@@ -15,23 +15,27 @@ class BalamodDetailsState extends Equatable {
   final StreamController<String>? eventLogStreamController;
   @JsonKey(includeFromJson: false, includeToJson: false)
   final StreamController<double>? progressStreamController;
-  final String selectedRelease;
+  final Release? selectedRelease;
   final List<String> eventLogs;
   @JsonKey(fromJson: _dirFromJson, toJson: _dirToJson)
   final Directory? decompileDirectory;
   final double progress;
+  final ScrollController? scrollController;
 
   const BalamodDetailsState({
     this.balatro,
     this.releases = const [],
-    this.status = Status.loading,
+    this.status = Status.initial,
     this.eventLogStreamController,
     this.progressStreamController,
-    this.selectedRelease = 'latest',
+    this.selectedRelease,
     this.eventLogs = const [],
     this.decompileDirectory,
     this.progress = 0.0,
+    this.scrollController,
   });
+
+  bool get isLoaded => !(status == Status.initial || status == Status.loading);
 
   factory BalamodDetailsState.initial() => const BalamodDetailsState();
 
@@ -39,12 +43,13 @@ class BalamodDetailsState extends Equatable {
     Balatro? balatro,
     Status? status,
     List<Release>? releases,
-    String? selectedRelease,
+    Release? selectedRelease,
     StreamController<String>? eventLogStreamController,
     StreamController<double>? progressStreamController,
     List<String>? eventLogs,
     Directory? decompileDirectory,
     double? progress,
+    ScrollController? scrollController,
   }) {
     return BalamodDetailsState(
       balatro: balatro ?? this.balatro,
@@ -57,6 +62,7 @@ class BalamodDetailsState extends Equatable {
       eventLogs: eventLogs ?? this.eventLogs,
       decompileDirectory: decompileDirectory ?? this.decompileDirectory,
       progress: progress ?? this.progress,
+      scrollController: scrollController ?? this.scrollController,
     );
   }
 
