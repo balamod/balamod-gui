@@ -20,7 +20,7 @@ abstract class PlatformFinder {
 
   Future<List<String?>> getVersion(pathToExe) async {
     final inputStream = InputFileStream(pathToExe);
-    final archive = ZipDecoder().decodeBuffer(inputStream);
+    final archive = ZipDecoder().decodeBuffer(inputStream); // TODO: find zip header on linux and windows
     String version = "0.0.0";
     String? balamodVersion;
     for (var file in archive.files) {

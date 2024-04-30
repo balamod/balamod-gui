@@ -95,7 +95,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.get_current_release.outputs.upload_url }}
-          asset_path: build/linux/release/balamod
+          asset_path: build/linux/x64/release/bundle/balamod
           asset_name: balamod
           asset_content_type: application/octet-stream
 
