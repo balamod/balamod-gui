@@ -1,7 +1,7 @@
 import 'package:balamod/models/balatro.dart';
 import 'dart:io';
 import 'dart:convert';
-import 'package:archive/archive_io.dart';
+import 'package:balamod/services/balatro.dart';
 
 abstract class PlatformFinder {
   Future<String> getSteamPath();
@@ -18,9 +18,8 @@ abstract class PlatformFinder {
         .toList();
   }
 
-  Future<List<String?>> getVersion(pathToExe) async {
-    final inputStream = InputFileStream(pathToExe);
-    final archive = ZipDecoder().decodeBuffer(inputStream); // TODO: find zip header on linux and windows
+  Future<List<String?>> getVersion(String pathToExe) async {
+    final archive = await BalatroArchive.fromPath(pathToExe);
     String version = "0.0.0";
     String? balamodVersion;
     for (var file in archive.files) {

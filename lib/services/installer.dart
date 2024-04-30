@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:archive/archive_io.dart';
 import 'package:balamod/models/balatro.dart';
+import 'package:balamod/services/balatro.dart';
 import 'package:balamod/services/finder.dart';
 import 'package:http/http.dart' as http;
 
@@ -82,29 +83,8 @@ class Installer {
 
     // Patch the main.lua file in the balatro archive
     eventLog.add('Patching balatro main.lua...');
-    final executableBytes =
-        await File('${balatro.path}/${balatro.executable}').readAsBytes();
-    final zipHeader = [0x50, 0x4b, 0x03, 0x04];
-    var zipHeaderIndex = 0;
-    var zipOffset = 0;
-    for (var i = 0; i < executableBytes.length; i++) {
-      final byte = executableBytes[i];
-      if (byte == zipHeader[zipHeaderIndex]) {
-        zipHeaderIndex++;
-        if (zipHeaderIndex == zipHeader.length) {
-          zipOffset = i - zipHeader.length + 1;
-          break;
-        }
-      } else {
-        zipHeaderIndex = 0;
-      }
-    }
-    final balatroArchive = ZipDecoder().decodeBytes(
-      executableBytes.sublist(
-        zipOffset,
-        executableBytes.length,
-      ),
-    );
+    final balatroArchive =
+        await BalatroArchive.fromPath('${balatro.path}/${balatro.executable}');
     final mainLua = balatroArchive.firstWhere(
       (file) => file.name == 'main.lua',
       orElse: () => throw StateError('main.lua not found in balatro archive'),
@@ -153,8 +133,7 @@ class Installer {
       return;
     }
     eventLog.add('Opening balatro executable at ${balatroExe.path}...');
-    final balatroArchive =
-        ZipDecoder().decodeBytes(balatroExe.readAsBytesSync()); // TODO: find zip header on linux and windows
+    final balatroArchive = await BalatroArchive.fromFile(balatroExe);
     eventLog.add('Extracting balatro executable to ${targetDir.path}...');
     eventLog.add('File list: ${balatroArchive.map((file) => file.name)}');
     for (final file in balatroArchive.files) {
