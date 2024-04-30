@@ -104,6 +104,39 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install the Apple certificate and provisioning profile
+        env:
+          DEVELOPER_ID_APPLICATION_CERTIFICATE: ${{ secrets.DEVELOPER_ID_APPLICATION_CERTIFICATE }}
+          DEVELOPER_ID_INSTALLER_CERTIFICATE: ${{ secrets.DEVELOPER_ID_INSTALLER_CERTIFICATE }}
+          MACOS_PROVISIONNING_PROFILE: ${{ secrets.MACOS_PROVISIONNING_PROFILE }}
+          P12_PASSWORD: ${{ secrets.P12_PASSWORD }}
+        run: |
+          # create variables
+          BUILD_CERTIFICATE_PATH=$RUNNER_TEMP/balamod_developer_id_application.p12
+          INSTALLER_CERTIFICATE_PATH=$RUNNER_TEMP/balamod_developer_id_installer.p12
+          PP_PATH=$RUNNER_TEMP/balamod_provisionning_profile.provisionprofile
+          KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
+
+          # import certificate and provisioning profile from secrets
+          echo -n "$DEVELOPER_ID_APPLICATION_CERTIFICATE" | base64 --decode -o $BUILD_CERTIFICATE_PATH
+          echo -n "$DEVELOPER_ID_INSTALLER_CERTIFICATE" | base64 --decode -o $INSTALLER_CERTIFICATE_PATH
+          echo -n "$MACOS_PROVISIONNING_PROFILE" | base64 --decode -o $PP_PATH
+
+          # create temporary keychain
+          security create-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+          security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+
+          # import certificates to keychain
+          security import $BUILD_CERTIFICATE_PATH -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
+          security import $INSTALLER_CERTIFICATE_PATH -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
+          security set-key-partition-list -S apple-tool:,apple: -k "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+          security list-keychain -d user -s $KEYCHAIN_PATH
+
+          # apply provisioning profile
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles
+
       - name: Get version tag
         id: version
         run: echo "version=$(git describe --tags --always)" >> $GITHUB_OUTPUT
@@ -138,7 +171,7 @@ jobs:
 
       - name: Sign installer
         run: |
-          codesign --force --deep --sign - ./balamod.pkg
+          productsign --sign "${{ secrets.DEVELOPER_ID_INSTALLER_NAME }}" ./balamod.pkg ./signed-balamod.pkg
 
       - name: Push pkg to release assets
         uses: actions/upload-release-asset@v1
@@ -146,6 +179,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.get_current_release.outputs.upload_url }}
-          asset_path: balamod.pkg
+          asset_path: signed-balamod.pkg
           asset_name: balamod.pkg
           asset_content_type: application/octet-stream
