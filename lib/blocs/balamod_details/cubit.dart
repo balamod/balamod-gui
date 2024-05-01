@@ -6,12 +6,10 @@ import 'package:balamod/services/installer.dart';
 import 'package:equatable/equatable.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:json_annotation/json_annotation.dart';
 import 'package:github/github.dart' show Release, GitHub, RepositorySlug;
 import 'package:path_provider/path_provider.dart';
 
 part 'state.dart';
-part 'cubit.g.dart';
 
 class BalamodDetailsCubit extends Cubit<BalamodDetailsState> {
   BalamodDetailsCubit() : super(BalamodDetailsState.initial());

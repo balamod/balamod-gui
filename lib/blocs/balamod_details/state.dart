@@ -2,25 +2,16 @@ part of 'cubit.dart';
 
 enum Status { initial, loading, ready, error }
 
-Directory? _dirFromJson(Map<String, dynamic>? json) => json?['path'] == null ? null : Directory(json!['path'] as String);
-
-Map<String, dynamic> _dirToJson(Directory? dir) => {'path': dir?.path};
-
-@JsonSerializable(explicitToJson: true)
 class BalamodDetailsState extends Equatable {
   final Balatro? balatro;
   final Status status;
   final List<Release> releases;
-  @JsonKey(includeFromJson: false, includeToJson: false)
   final StreamController<String>? eventLogStreamController;
-  @JsonKey(includeFromJson: false, includeToJson: false)
   final StreamController<double>? progressStreamController;
   final Release? selectedRelease;
   final List<String> eventLogs;
-  @JsonKey(fromJson: _dirFromJson, toJson: _dirToJson)
   final Directory? decompileDirectory;
   final double progress;
-  @JsonKey(includeFromJson: false, includeToJson: false)
   final ScrollController? scrollController;
 
   const BalamodDetailsState({
@@ -66,11 +57,6 @@ class BalamodDetailsState extends Equatable {
       scrollController: scrollController ?? this.scrollController,
     );
   }
-
-  factory BalamodDetailsState.fromJson(Map<String, dynamic> json) =>
-      _$BalamodDetailsStateFromJson(json);
-
-  Map<String, dynamic> toJson() => _$BalamodDetailsStateToJson(this);
 
   @override
   List<Object?> get props => [
