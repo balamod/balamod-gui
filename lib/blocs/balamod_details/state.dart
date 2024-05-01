@@ -20,6 +20,7 @@ class BalamodDetailsState extends Equatable {
   @JsonKey(fromJson: _dirFromJson, toJson: _dirToJson)
   final Directory? decompileDirectory;
   final double progress;
+  @JsonKey(includeFromJson: false, includeToJson: false)
   final ScrollController? scrollController;
 
   const BalamodDetailsState({
