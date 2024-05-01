@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:archive/archive_io.dart';
@@ -83,24 +82,12 @@ class Installer {
 
     // Patch the main.lua file in the balatro archive
     eventLog.add('Patching balatro main.lua...');
-    final balatroArchive =
-        await BalatroArchive.fromPath('${balatro.path}/${balatro.executable}');
-    final mainLua = balatroArchive.firstWhere(
-      (file) => file.name == 'main.lua',
-      orElse: () => throw StateError('main.lua not found in balatro archive'),
-    );
-    eventLog.add(
-        'Found main.lua in balatro archive size: ${mainLua.content.length} bytes');
-    final mainLuaContent = utf8.decoder.convert(mainLua.content as List<int>);
-    final patchedMainLuaContent = StringBuffer(mainLuaContent);
-    patchedMainLuaContent
-        .writeln(await getBalamodPatchContents(version: version));
+    final patchedMainLuaContent = await getBalamodPatchContents(version: version);
     eventLog.add(
         'Patched main.lua with balamod content size: ${patchedMainLuaContent.length} bytes');
-    // Repackage the archive
     eventLog.add('Writing patched file to ${saveDirectory.path}/main.lua');
     final output = File('${saveDirectory.path}/main.lua');
-    output.writeAsStringSync(patchedMainLuaContent.toString());
+    await output.writeAsString(patchedMainLuaContent);
     eventLog.add('Install complete!');
   }
 
