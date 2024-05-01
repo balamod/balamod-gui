@@ -95,14 +95,17 @@ jobs:
       - name: Build Linux
         run: flutter build linux --release --build-name ${{ steps.version.outputs.version }}
 
+      - name: Package assets into a tar.gz file
+        run: tar -czvf balamod-linux.tar.gz build/linux/x64/release/bundle
+
       - name: Push executable to release assets
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.get_current_release.outputs.upload_url }}
-          asset_path: build/linux/x64/release/bundle/balamod
-          asset_name: balamod
+          asset_path: balamod-linux.tar.gz
+          asset_name: balamod-linux.tar.gz
           asset_content_type: application/octet-stream
 
   build-macos:
