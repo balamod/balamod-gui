@@ -19,6 +19,18 @@ class Installer {
     required this.balatro,
   });
 
+  String get balalibName {
+    if (Platform.isWindows) {
+      return 'balalib.dll';
+    } else if (Platform.isMacOS) {
+      return 'balalib.dylib';
+    } else if (Platform.isLinux) {
+      return 'balalib.so';
+    } else {
+      throw UnsupportedError('Unsupported platform');
+    }
+  }
+
   Future<Uri> getReleaseUri({String version = 'latest'}) {
     if (Platform.isWindows) {
       return windows.BalatroFinder().getBalamodReleaseUrl(version: version);
@@ -26,6 +38,18 @@ class Installer {
       return macos.BalatroFinder().getBalamodReleaseUrl(version: version);
     } else if (Platform.isLinux) {
       return linux.BalatroFinder().getBalamodReleaseUrl(version: version);
+    } else {
+      throw UnsupportedError('Unsupported platform');
+    }
+  }
+
+  Future<Uri> getBalalibReleaseUri({String version = 'latest'}) {
+    if (Platform.isWindows) {
+      return windows.BalatroFinder().getBalalibReleaseUrl(version: version);
+    } else if (Platform.isMacOS) {
+      return macos.BalatroFinder().getBalalibReleaseUrl(version: version);
+    } else if (Platform.isLinux) {
+      return linux.BalatroFinder().getBalalibReleaseUrl(version: version);
     } else {
       throw UnsupportedError('Unsupported platform');
     }
@@ -74,11 +98,21 @@ class Installer {
           .join('/');
       final destination = File('${saveDirectory.path}/balamod/$filename');
       eventLog.add('Extracting ${file.name} to ${destination.path}');
-      destination.createSync(recursive: true);
-      destination.writeAsBytesSync(file.content as List<int>);
+      await destination.create(recursive: true);
+      await destination.writeAsBytes(file.content as List<int>);
       eventLog.add(
           'Extracted ${file.name} to ${destination.path} size: ${destination.lengthSync()} bytes');
     }
+
+    // Download the balalib library
+    eventLog.add('Downloading balalib release $version...');
+    final balalibUri = await getBalalibReleaseUri(version: version);
+    final balalibResponse = await http.get(balalibUri);
+    eventLog.add(
+        'Downloaded balalib release $version size: ${balalibResponse.bodyBytes.length} bytes');
+    final balalibFile = File('${saveDirectory.path}/$balalibName');
+    eventLog.add('Writing balalib to ${balalibFile.path}');
+    await balalibFile.writeAsBytes(balalibResponse.bodyBytes);
 
     // Patch the main.lua file in the balatro archive
     eventLog.add('Patching balatro main.lua...');
@@ -103,6 +137,15 @@ class Installer {
     eventLog.add('Deleting balamod directory at ${balamodDirectory.path}');
     await balamodDirectory.delete(recursive: true);
     eventLog.add('balamod directory deleted');
+
+    final balalibFile = File('${saveDirectory.path}/$balalibName');
+    if (await balalibFile.exists()) {
+      eventLog.add('Deleting balalib library...');
+      await balalibFile.delete();
+    } else {
+      eventLog.add('balalib library not found at ${balalibFile.path}, skipping...');
+    }
+
     eventLog.add('Deleting main.lua patches...');
     final mainLua = File('${saveDirectory.path}/main.lua');
     if (await mainLua.exists()) {

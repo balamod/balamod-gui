@@ -33,4 +33,14 @@ class BalatroFinder extends PlatformFinder {
     return Uri.parse(
         'https://github.com/balamod/balamod_lua/releases/download/$version/balamod-macos.tar.gz');
   }
+
+  @override
+  Future<Uri> getBalalibReleaseUrl({String version = 'latest'}) async {
+    if (version == 'latest') {
+      return Uri.parse(
+          'https://github.com/balamod/balalib/releases/$version/download/libbalalib.dylib');
+    }
+    return Uri.parse(
+        'https://github.com/balamod/balamod_lua/releases/download/$version/libbalalib.dylib');
+  }
 }

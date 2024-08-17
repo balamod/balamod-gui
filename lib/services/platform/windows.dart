@@ -42,4 +42,14 @@ class BalatroFinder extends PlatformFinder {
     return Uri.parse(
         'https://github.com/balamod/balamod_lua/releases/download/$version/balamod-windows.tar.gz');
   }
+
+  @override
+  Future<Uri> getBalalibReleaseUrl({String version = 'latest'}) async {
+    if (version == 'latest') {
+      return Uri.parse(
+          'https://github.com/balamod/balalib/releases/$version/download/libbalalib.dll');
+    }
+    return Uri.parse(
+        'https://github.com/balamod/balamod_lua/releases/download/$version/libbalalib.dll');
+  }
 }
