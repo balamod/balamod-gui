@@ -22,17 +22,17 @@ class BalatroFinder extends PlatformFinder {
   Future<Directory> getBalatroSaveDirectory() async {
     final homeDir = '${Platform.environment['HOME']}';
     return Directory(
-        '$homeDir/.local/share/Steam/steamapps/compatdata/2379780/pfx/drive_c/users/steamuser/AppData/Roaming/Balatro'); // ?? not sure about the linux directory
+        '$homeDir/.local/share/love/Balatro');
   }
 
   @override
   Future<Uri> getBalamodReleaseUrl({String version = 'latest'}) async {
     if (version == 'latest') {
       return Uri.parse(
-          'https://github.com/balamod/balamod_lua/releases/$version/download/balamod-linux-proton.tar.gz');
+          'https://github.com/balamod/balamod_lua/releases/$version/download/balamod-linux-native.tar.gz');
     }
     return Uri.parse(
-        'https://github.com/balamod/balamod_lua/releases/download/$version/balamod-linux-proton.tar.gz');
+        'https://github.com/balamod/balamod_lua/releases/download/$version/balamod-linux-native.tar.gz');
   }
 
   @override

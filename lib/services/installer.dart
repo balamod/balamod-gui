@@ -7,7 +7,7 @@ import 'package:balamod/services/balatro.dart';
 import 'package:balamod/services/finder.dart';
 import 'package:http/http.dart' as http;
 
-import 'platform/linux.dart' as linux;
+import 'platform/linux_proton.dart' as linux;
 import 'platform/macos.dart' as macos;
 import 'platform/windows.dart' as windows;
 

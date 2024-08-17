@@ -4,7 +4,7 @@ import 'package:balamod/models/balatro.dart';
 
 import 'platform/windows.dart' as windows;
 import 'platform/macos.dart' as macos;
-import 'platform/linux.dart' as linux;
+import 'platform/linux_proton.dart' as linux;
 
 final class BalatroFinder {
   const BalatroFinder();
