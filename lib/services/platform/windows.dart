@@ -50,6 +50,6 @@ class BalatroFinder extends PlatformFinder {
           'https://github.com/balamod/balalib/releases/$version/download/balalib.dll');
     }
     return Uri.parse(
-        'https://github.com/balamod/balamod_lua/releases/download/$version/balalib.dll');
+        'https://github.com/balamod/balalib/releases/download/$version/balalib.dll');
   }
 }
