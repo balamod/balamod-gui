@@ -108,7 +108,7 @@ class Installer {
     eventLog.add('Downloading balalib release $version...');
 
     // TODO: add a combo box to select the version of balalib to download
-    final balalibUri = await getBalalibReleaseUri('latest');
+    final balalibUri = await getBalalibReleaseUri(version: 'latest');
     final balalibResponse = await http.get(balalibUri);
     eventLog.add(
         'Downloaded balalib release $version size: ${balalibResponse.bodyBytes.length} bytes');
