@@ -47,9 +47,9 @@ class BalatroFinder extends PlatformFinder {
   Future<Uri> getBalalibReleaseUrl({String version = 'latest'}) async {
     if (version == 'latest') {
       return Uri.parse(
-          'https://github.com/balamod/balalib/releases/$version/download/libbalalib.dll');
+          'https://github.com/balamod/balalib/releases/$version/download/balalib.dll');
     }
     return Uri.parse(
-        'https://github.com/balamod/balamod_lua/releases/download/$version/libbalalib.dll');
+        'https://github.com/balamod/balalib/releases/download/$version/balalib.dll');
   }
 }
