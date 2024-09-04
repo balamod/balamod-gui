@@ -16,14 +16,14 @@ dependencies:
   json_annotation: ^4.8.1
   flutter_native_splash: ^2.4.0
   hydrated_bloc: ^9.1.5
-  archive: ^3.4.10
+  archive: ^3.6.1
   equatable: ^2.0.5
   path_provider: ^2.1.2
   shared_preferences: ^2.2.2
   crypto: ^3.0.3
   win32_registry: ^1.1.2
   http: ^1.2.1
-  tar: ^1.0.4
+  tar: ^2.0.0
   github: ^9.24.0
   google_fonts: ^6.2.1
   file_picker: ^8.0.1
