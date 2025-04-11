@@ -92,6 +92,11 @@ class Installer {
     final archive =
         TarDecoder().decodeBytes(GZipDecoder().decodeBytes(response.bodyBytes));
     for (final file in archive) {
+      // If file.isFile == false, then it is a directory
+      // Trying to create a directory as a File hangs the program
+      if (!file.isFile) {
+        continue;
+      }
       final filename = file.name
           .split('/')
           .skipWhile((value) => value.startsWith('balamod-'))
@@ -118,7 +123,8 @@ class Installer {
 
     // Patch the main.lua file in the balatro archive
     eventLog.add('Patching balatro main.lua...');
-    final patchedMainLuaContent = await getBalamodPatchContents(version: version);
+    final patchedMainLuaContent =
+        await getBalamodPatchContents(version: version);
     eventLog.add(
         'Patched main.lua with balamod content size: ${patchedMainLuaContent.length} bytes');
     eventLog.add('Writing patched file to ${saveDirectory.path}/main.lua');
@@ -145,7 +151,8 @@ class Installer {
       eventLog.add('Deleting balalib library...');
       await balalibFile.delete();
     } else {
-      eventLog.add('balalib library not found at ${balalibFile.path}, skipping...');
+      eventLog
+          .add('balalib library not found at ${balalibFile.path}, skipping...');
     }
 
     eventLog.add('Deleting main.lua patches...');
